@@ -1,0 +1,24 @@
+{
+  "name": "employee-database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choyle-01/employee-database.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/choyle-01/employee-database/issues"
+  },
+  "homepage": "https://github.com/choyle-01/employee-database#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "inquirer": "^8.2.2"
+  }
+}
