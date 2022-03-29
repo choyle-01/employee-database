@@ -19,6 +19,7 @@
   "homepage": "https://github.com/choyle-01/employee-database#readme",
   "dependencies": {
     "express": "^4.17.3",
-    "inquirer": "^8.2.2"
+    "inquirer": "^8.2.2",
+    "mysql2": "^2.3.3"
   }
 }
