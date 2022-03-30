@@ -43,7 +43,7 @@ const init = () => {
         employeeAdd();
         break;
       case "Update Employee Role":
-        updateRole();
+        roleUpdate();
         break;
       case "View All Roles":
         viewRole();
@@ -82,25 +82,9 @@ const addingRole = [
     name: "salary",
   },
   {
-    type: "choice",
-    message: "Which department does the role belng to?",
+    type: "input",
+    message: "What is the id of the department this role belongs to?",
     name: "department",
-    choices: ["Engineering", "Finance", "Legal", "Sales", "Service"],
-  },
-];
-
-const updateRole = [
-  {
-    type: "choice",
-    message: "Which employee's role do you wish to update?",
-    name: "updateRole",
-    choices: [],
-  },
-  {
-    type: "choice",
-    message: "Which role do you want to assign the selected employee?",
-    name: "assignRole",
-    choices: [],
   },
 ];
 
@@ -145,67 +129,94 @@ const departmentAdd = () => {
 
 const roleAdd = () => {
   inquirer.prompt(addingRole).then((answer) => {
-    
+    db.query("INSERT INTO role SET?", {
+      title: answer.role,
+      salary: answer.salary,
+      department: answer.department,
+    });
+    init();
   });
 };
 
-const employeeAdd = () => {
-  db.query("SELECT * FROM role", (err, res) => {
+const employeeAdd = function () {
+  db.query("SELECT * FROM role", function (err, data) {
     if (err) throw err;
+
     inquirer
       .prompt([
         {
           type: "input",
-          message: "What is the employee's first name?",
+          message: "Enter the employee's first name",
           name: "firstName",
         },
         {
           type: "input",
-          message: "What is the employee's last name?",
+          message: "Enter the employee's last name",
           name: "lastName",
         },
         {
-          type: "choice",
-          message: "What is the employee's role?",
           name: "role",
-          choices: res.map((role) => role.title),
+          type: "rawlist",
+          choices: function () {
+            var choiceArr = [];
+            for (i = 0; i < data.length; i++) {
+              choiceArr.push(data[i].title);
+            }
+            return choiceArr;
+          },
+          message: "Select title",
+        },
+        {
+          name: "manager",
+          type: "number",
+          message: "Enter manager ID",
+          default: "1",
         },
       ])
-      .then((answer) => {
-        var firstName = answer.firstName;
-        var lastName = answer.lastName;
-        var selectedRole = res.find((role) => role.title === answer.role);
-        db.query("SELECT * FROM employee", (err, res) => {
-          if (err) throw err;
-          inquirer
-            .prompt([
-              {
-                type: "choice",
-                message: "Who is the employee's manager?",
-                name: "manager",
-                choices: res.map((employee) => employee.first_name),
-              },
-            ])
-            .then((answer) => {
-              var chosenManager = res.find(
-                (employee) => employee.first_name === answer.manager
-              );
-              db.query("INSERT INTO employee SET ?", {
-                first_name: firstName,
-                last_name: lastName,
-                role: selectedRole.id,
-                manager: chosenManager.id,
-              });
-              init();
-            });
+      .then(function (answer) {
+        db.query("INSERT INTO employee SET ?", {
+          first_name: answer.firstName,
+          last_name: answer.lastName,
+          role_id: answer.role,
+          manager_id: answer.manager
         });
+        init();
       });
   });
 };
 
 const roleUpdate = () => {
-  inquirer.prompt(updateRole).then((answer) => {
-    if (answer.choice === "") {
-    }
+  db.query("SELECT * FROM role", async function (err, data) {
+    var role = data.map(function (role) {
+      return {
+        role: role.title,
+      };
+    });
+    db.query("SELECT * FROM employee", async function (err, data) {
+      var employee = data.map(function (employee) {
+        return {
+          name: employee.first_name + " " + employee.last_name,
+        };
+      });
+
+      var questions = [
+        {
+          type: "list",
+          message: "What employee's role would you like to update?",
+          name: "employee",
+          choices: employee,
+        },
+        {
+          type: "list",
+          message: "What role do want to assign to the employee?",
+          name: "role",
+          choices: role,
+        },
+      ];
+
+      inquirer.prompt(questions).then(function (answer) {
+        db.query(`UPDATE employee SET `);
+      });
+    });
   });
 };
