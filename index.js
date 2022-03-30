@@ -207,15 +207,17 @@ const roleUpdate = () => {
           choices: employee,
         },
         {
-          type: "list",
-          message: "What role do want to assign to the employee?",
+          type: "input",
+          message: "What is the number of the role you want to assign to the employee?",
           name: "role",
-          choices: role,
         },
       ];
 
       inquirer.prompt(questions).then(function (answer) {
-        db.query(`UPDATE employee SET `);
+        db.query(`UPDATE employee SET ?`, {
+          role: answer.role
+        });
+        init();
       });
     });
   });
