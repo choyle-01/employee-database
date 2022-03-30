@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const PORT = process.env.PORT || 3001;
+require("console.table");
 
 // Connect to database
 const db = mysql.createConnection(
@@ -155,19 +156,23 @@ const employeeAdd = function () {
           name: "lastName",
         },
         {
-          name: "role",
+          name: "role_id",
           type: "rawlist",
           choices: function () {
             var choiceArr = [];
             for (i = 0; i < data.length; i++) {
-              choiceArr.push(data[i].title);
+              const choice = {
+                value: data[i].id,
+                name: data[i].title
+              }
+              choiceArr.push(choice);
             }
             return choiceArr;
           },
           message: "Select title",
         },
         {
-          name: "manager",
+          name: "manager_id",
           type: "number",
           message: "Enter manager ID",
           default: "1",
@@ -177,10 +182,14 @@ const employeeAdd = function () {
         db.query("INSERT INTO employee SET ?", {
           first_name: answer.firstName,
           last_name: answer.lastName,
-          role_id: answer.role,
-          manager_id: answer.manager
-        });
-        init();
+          role_id: answer.role_id,
+          manager_id: answer.manager_id
+        }, (err, result) => {
+          if (err){
+            console.log(err);
+          };
+          init();
+        })
       });
   });
 };
@@ -207,7 +216,7 @@ const roleUpdate = () => {
           choices: employee,
         },
         {
-          type: "input",
+          type: "number",
           message: "What is the number of the role you want to assign to the employee?",
           name: "role",
         },
@@ -215,7 +224,7 @@ const roleUpdate = () => {
 
       inquirer.prompt(questions).then(function (answer) {
         db.query(`UPDATE employee SET ?`, {
-          role: answer.role
+          role_id: answer.role
         });
         init();
       });

@@ -18,4 +18,4 @@ The GitHub repository can be found [here.](https://github.com/choyle-01/employee
 
 ## Visuals 
 
-The link to a video demonstration can be found [here.](https://drive.google.com/file/d/1DAKyfOLcPqH5Yv_LU7VBdVdqFhFZ-gD0/view?usp=sharing)
+The link to a video demonstration can be found [here.](https://drive.google.com/file/d/1u7O2-WGWi1eVotNUgt3RMGuzQQgd5TyK/view?usp=sharinggit)
